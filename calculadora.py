@@ -32,19 +32,21 @@ seccion_operadores = [
 operacion = [
 
 
-    [sg.Text("" , key = "-OPERACION-", font='Courier ',size = (5,5))],
+    [sg.Text("" , key = "-OPERACION-", font='Courier 14',size = (20,2))],
 
     #[sg.HSeparator()],
 
 
     [sg.Text("Num1")],
-    [sg.Text("" , key = "-NUM1-",size = (5,5), font='Courier 10')],
+
+    [sg.Text("" , key = "-NUM1-", font='Courier 10',size = (10,5))],
+
     [sg.Text("Num2")],
-    [sg.Text("" , key = "-NUM2-", font='Courier 10',size = (5,5))],
+    [sg.Text("" , key = "-NUM2-", font='Courier 10',size = (10,5))],
 
 
     [sg.Text("RESULTADO")],
-    [sg.Text("", key = "-RESULTADO-",size = (5,5))]
+    [sg.Text("", key = "-RESULTADO-", font = 'Courier 12',size = (15,8))]
 
 ]
 
@@ -65,7 +67,7 @@ layout = [
 ]
 
 #Creamos la ventana
-window = sg.Window("Calculadora",layout,margins=(300,200))
+window = sg.Window("Calculadora", layout, margins=(150,100))
 
 
 
@@ -104,12 +106,25 @@ while True:
         else:
             StrNum2 += event
 
+        #Update de los elementos que muestran la operacion, y cada uno de los operandos seleccionados
+        window["-OPERACION-"].update(value = StrNum1 + " " + Op + " " + StrNum2)
+
+
+
 
     #Si el boton apretado es un operador
     if event in strOperadores and not(EligioOperador):
 
         #Guarda el primer operando, si no se ingresó se supone cero
         if StrNum1 != "":
+
+
+            while(StrNum1[0] == "0") and (len(StrNum1) > 1):
+                StrNum1 = StrNum1[1:]
+                    
+                print(StrNum1)
+
+
             Num1 = int(StrNum1)
         else:
             Num1 = 0
@@ -117,9 +132,11 @@ while True:
         #Guarda el operador seleccionado
         Op = event
 
-
         #Setear en true la variable de control
         EligioOperador = True
+
+        #Update de los elementos que muestran la operacion, y cada uno de los operandos seleccionados
+        window["-OPERACION-"].update(value = StrNum1 + " " + Op + " " + StrNum2)
 
 
 
@@ -130,6 +147,16 @@ while True:
         if (EligioOperador):
      
             if StrNum2 != "":
+
+                #Quitar ceros a la izquierda
+
+                while (StrNum2[0] == "0") and (len(StrNum2) > 1):
+                    StrNum2 = StrNum2[1:]
+                    
+                    print(StrNum2)
+
+
+
                 Num2 = int(StrNum2)
             else:
                 Num2 = 0
@@ -144,15 +171,25 @@ while True:
         #Si no eligio operador es por que solo selecciono un numero, este sera el resultado 
         # (si solo ingreso 3 y doy a igual, deberia decirme que es = 3)
         else:
+
+            #Si no ha ingresado ni siquiera un numero, el resultado es cero
+            if StrNum1 == "":
+                Num1 = 0
+            else:
+                #Quitar ceros a la izq en caso de que el numero los tenga
+                while(StrNum1[0] == "0") and (len(StrNum1) > 1):
+                    StrNum1 = StrNum1[1:]
+
+            #Actualizar el resultado
             window["-RESULTADO-"].update(value = StrNum1)
         
+        #Update de los elementos que muestran la operacion, y cada uno de los operandos seleccionados
+        window["-OPERACION-"].update(value = StrNum1 + " " + Op + " " + StrNum2)
         
         #Resetea los strings,
         StrNum1, StrNum2, Op = "","",""
         
 
-    #Update de los elementos que muestran la operacion, y cada uno de los operandos seleccionados
-    window["-OPERACION-"].update(value = StrNum1 + " " + Op + " " + StrNum2)
 
     window["-NUM2-"].update(value = StrNum2)
     window["-NUM1-"].update(value = StrNum1)
