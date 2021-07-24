@@ -101,15 +101,8 @@ while True:
         #Concatenar el digito al operando que corresponda,
         if not(EligioOperador):
             StrNum1 += event
-            print("NUM UNO ES:  " + StrNum1)
-
-            
-            #window("-NUM1-").update(value = StrNum1)
-
         else:
             StrNum2 += event
-            print(StrNum2)
-            #window["-NUM2-"].update(value = StrNum2)
 
 
     #Si el boton apretado es un operador
@@ -123,73 +116,49 @@ while True:
 
         #Guarda el operador seleccionado
         Op = event
-        print(EligioOperador)
+
 
         #Setear en true la variable de control
         EligioOperador = True
 
-        print(EligioOperador)
-    #Si el boton es el igual, resolver el calculo y resetear las variables de string
-    if (event == "=") and (EligioOperador):
 
-        if StrNum2 != "":
-            Num2 = int(StrNum2)
-            print(Num2)
-        else:
-            Num2 = 0
+
+    #Si el boton es el igual, resolver el calculo y resetear las variables de string 
+    if (event == "="): 
+    
+        #Si eligio el operador calcular el resultado
+        if (EligioOperador):
+     
+            if StrNum2 != "":
+                Num2 = int(StrNum2)
+            else:
+                Num2 = 0
+                
+            #Update del resultado, llama a la funcion que calcula el resultado
+            window["-RESULTADO-"].update(CalcularResultado(Num1,Num2,Op))
+
+            # resetea la variable de control
             
-        window["-RESULTADO-"].update(CalcularResultado(Num1,Num2,Op))
+            EligioOperador = False
 
+        #Si no eligio operador es por que solo selecciono un numero, este sera el resultado 
+        # (si solo ingreso 3 y doy a igual, deberia decirme que es = 3)
+        else:
+            window["-RESULTADO-"].update(value = StrNum1)
+        
+        
+        #Resetea los strings,
         StrNum1, StrNum2, Op = "","",""
-
-
         
+
+    #Update de los elementos que muestran la operacion, y cada uno de los operandos seleccionados
     window["-OPERACION-"].update(value = StrNum1 + " " + Op + " " + StrNum2)
+
     window["-NUM2-"].update(value = StrNum2)
-
-    #window("-NUM1-").update(value = StrNum1)
-
-    window["-NUM1-"].update(StrNum1)
-    #window["-NUM2-"].update(StrNum2)
-
-
-
-        #No logro hacer un update que muestre el nuevo nro
-        
-
-
-
-
-
+    window["-NUM1-"].update(value = StrNum1)
 
 
    
     
 window.close()    
 
-
-
-"""     
-    if event in strDigs and not(EligioPrimerNro):
-
-        if not(EligioPrimerDig):
-   
-
-            PrimerNro = event
-
-            EligioPrimerDig = True
-
-
-            print("Acaba de elegir primer dig y fue " + PrimerNro)
-
-        else:
-
-            PrimerNro += event
-
-            print("Acaba de elegir siguiente dig y resulto " + PrimerNro)
-    if not(EligioPrimerNro) and event == "-IGUAL-":
-        
-        EligioPrimerNro = True
-
-        PrimerOperando = int(PrimerNro)
- """
