@@ -3,11 +3,12 @@ from funciones import CalcularResultado
 import PySimpleGUI as sg
 
 #Definimos los elementos divididos en secciones segun su funcion
-#una para los operandos, otra para los operadores, y una seccion para la operacion y el resultado
-
+#una para los digitos, otra para los operadores, y una seccion para la operacion y el resultado
 seccion_numeros = [
 
-    [sg.Button("0",size = (2,2),key = "0")],
+    [sg.Button("",visible = False)],
+
+                                    [sg.Button("0",size = (2,2), key = "0", pad = (39,0,0,0), focus = False)],
 
     [sg.Button("1",size = (2,2),key = "1"), sg.Button("2",size = (2,2),key = "2"), sg.Button("3",size = (2,2),key = "3")],
 
@@ -27,36 +28,28 @@ seccion_operadores = [
     [sg.Button("=",size = (4,4), key = "=")]
 ]
 
+resultado = [
 
 
-operacion = [
-
-
-    [sg.Text("" , key = "-OPERACION-", font='Courier 14',size = (20,2))],
-
-    #[sg.HSeparator()],
-
-
-    [sg.Text("Num1")],
-
-    [sg.Text("" , key = "-NUM1-", font='Courier 10',size = (10,5))],
-
-    [sg.Text("Num2")],
-    [sg.Text("" , key = "-NUM2-", font='Courier 10',size = (10,5))],
-
-
-    [sg.Text("RESULTADO")],
     [sg.Text("", key = "-RESULTADO-", font = 'Courier 12',size = (15,8))]
 
 ]
+
+operacion = [
+
+    [sg.Text("" , key = "-OPERACION-", font='Courier 14',size = (20,2))],
+    [sg.Frame("RESULTADO",resultado)],
+
+]
+
 
 #Creamos el layout
 
 layout = [
 
-
     [
-        sg.Column(operacion),
+        sg.Frame("Cuenta",operacion),
+
 
         sg.Column(seccion_numeros),
 
@@ -67,19 +60,18 @@ layout = [
 ]
 
 #Creamos la ventana
-window = sg.Window("Calculadora", layout, margins=(150,100))
-
+window = sg.Window("Calculadora", layout, margins=(100,50))
 
 
 strDigs = ["0","1","2","3","4","5","6","7","8","9"]
 
 strOperadores = ["+","-","*","/"]
 
-#Un booleano que es falso si el usuario no ha seleccionado el primer numero
-IngresoPrimerNro = False
-#IngresoSegundoNro = False
 
+#Un booleano que es falso si el usuario no ha seleccionado el operador 
+#Dependiendo de esto sabemos si el usuario esta seleccionando el primero o el segundo operando
 EligioOperador = False
+
 
 StrNum1, StrNum2, Op = "","",""
 
@@ -89,8 +81,6 @@ StrNum1, StrNum2, Op = "","",""
 while True:
 
     event, values = window.read()
-
-
 
 
     if event == "Exit" or event == sg.WIN_CLOSED:
@@ -111,7 +101,6 @@ while True:
 
 
 
-
     #Si el boton apretado es un operador
     if event in strOperadores and not(EligioOperador):
 
@@ -124,10 +113,8 @@ while True:
                     
                 print(StrNum1)
 
-
-            Num1 = int(StrNum1)
         else:
-            Num1 = 0
+            StrNum1 = str(window["-RESULTADO-"].get())
 
         #Guarda el operador seleccionado
         Op = event
@@ -152,29 +139,29 @@ while True:
 
                 while (StrNum2[0] == "0") and (len(StrNum2) > 1):
                     StrNum2 = StrNum2[1:]
-                    
-                    print(StrNum2)
 
-
-
-                Num2 = int(StrNum2)
+                #Num2 = int(StrNum2)
             else:
-                Num2 = 0
+                StrNum2 = "0"
                 
+            #Convertir los strings a flotantes o a enteros segun corresponda
+            Num1 = float(StrNum1) if '.' in StrNum1 or 'e' in StrNum1.lower() else int(StrNum1)
+            Num2 = float(StrNum2) if '.' in StrNum2 or 'e' in StrNum2.lower() else int(StrNum2)
+
             #Update del resultado, llama a la funcion que calcula el resultado
             window["-RESULTADO-"].update(CalcularResultado(Num1,Num2,Op))
 
             # resetea la variable de control
-            
             EligioOperador = False
+
 
         #Si no eligio operador es por que solo selecciono un numero, este sera el resultado 
         # (si solo ingreso 3 y doy a igual, deberia decirme que es = 3)
         else:
 
-            #Si no ha ingresado ni siquiera un numero, el resultado es cero
+            #Si no ha ingresado ni siquiera un numero, este se supone cero
             if StrNum1 == "":
-                Num1 = 0
+                StrNum1 = "0"
             else:
                 #Quitar ceros a la izq en caso de que el numero los tenga
                 while(StrNum1[0] == "0") and (len(StrNum1) > 1):
@@ -183,19 +170,33 @@ while True:
             #Actualizar el resultado
             window["-RESULTADO-"].update(value = StrNum1)
         
+
         #Update de los elementos que muestran la operacion, y cada uno de los operandos seleccionados
         window["-OPERACION-"].update(value = StrNum1 + " " + Op + " " + StrNum2)
         
         #Resetea los strings,
         StrNum1, StrNum2, Op = "","",""
-        
-
-
-    window["-NUM2-"].update(value = StrNum2)
-    window["-NUM1-"].update(value = StrNum1)
-
 
    
     
 window.close()    
 
+
+
+""""    
+
+    BUGS A CORREGIR
+
+
+    * AL PRODUCIR UN ERROR EN EL RESULTADO, SI SELECCIONAMOS OTRO OPERADOR EL RESULTADO 'ERROR' SERA EL PRIMER OPERANDO DE ESTA NUEVA CUENTA
+        AL PRESIONAR = NO PUEDE OPERAR CON EL STRING 'ERROR' Y LEVANTA ValueError
+    DE ALGUNA MANERA SETEAR EL OPERANDO A CERO CUANDO ESTE SEA 'ERROR'
+
+
+    * AL OBTENER UN RESULTADO FLOTANTE DEL TIPO 1.0, 1.000, 3.0 ETC, SI SELECCIONAMOS OTRO OPERADOR Y UN OPERANDO ENTERO, EL RESULTADO
+        MANTENDRA ESE DECIMAL NULO, POR EJEMPLO DESDE UN RESULTADO 4.0, SI SELECCIONAMOS LA SUMA Y LUEGO EL NUMERO 2:
+
+        4.0 + 2 = 6.0   EN VEZ DE :     4.0 + 2 = 6
+
+
+"""
