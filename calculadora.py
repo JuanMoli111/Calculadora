@@ -1,6 +1,11 @@
+from typing import TextIO
 from funciones import *
 
 import PySimpleGUI as sg
+
+
+sg.theme('Python')
+
 
 #Definimos los elementos divididos en secciones segun su funcion
 #una para los digitos, otra para los operadores, y una seccion para la operacion y el resultado
@@ -28,19 +33,21 @@ seccion_operadores = [
     [sg.Button("=",size = (4,4), key = "=")]
 ]
 
+
 resultado = [
 
-
-    [sg.Text("", key = "-RESULTADO-", font = 'Courier 12',size = (15,8))]
+    [sg.Text("", key = "-RESULTADO-", font = 'Courier 12', text_color = 'Purple',size = (15,8))]
 
 ]
 
 operacion = [
 
-    [sg.Text("" , key = "-OPERACION-", font='Courier 14',size = (20,2))],
+    [sg.Text("" , key = "-OPERACION-", font='Courier 14', text_color = 'Dark Blue',size = (20,2))],
     [sg.Frame("RESULTADO",resultado)],
 
 ]
+
+
 
 
 #Creamos el layout
@@ -50,7 +57,6 @@ layout = [
     [
         sg.Frame("Cuenta",operacion),
 
-
         sg.Column(seccion_numeros),
 
         sg.VSeparator(),
@@ -58,6 +64,9 @@ layout = [
         sg.Column(seccion_operadores)
     ]
 ]
+
+
+
 
 #Creamos la ventana
 window = sg.Window("Calculadora", layout, margins=(100,50))
@@ -79,6 +88,7 @@ StrNum1, StrNum2, Op = "","",""
 
 #Loop de la ventana
 while True:
+
 
     event, values = window.read()
 
@@ -104,7 +114,7 @@ while True:
     #Si el boton apretado es un operador
     if event in strOperadores and not(EligioOperador):
 
-        #Guarda el primer operando, si no se ingresó se supone cero
+
         
         #Si es distinto de vacio ingresó un numero
         if StrNum1 != "":
@@ -114,7 +124,7 @@ while True:
                 StrNum1 = StrNum1[1:]
 
         #Si no ingresó un numero tomar el resultado de la operacion anterior
-        # si la operacion levanto ERROR el primer operando queda en cero
+        # si la operacion levanto ERROR que el primer operando quede en cero
         else:
             
             Resultado = str(window["-RESULTADO-"].get())
