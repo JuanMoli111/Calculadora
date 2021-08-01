@@ -1,4 +1,3 @@
-from typing import TextIO
 from funciones import *
 
 import PySimpleGUI as sg
@@ -13,7 +12,7 @@ seccion_numeros = [
 
     [sg.Button("",visible = False)],
 
-                                    [sg.Button("0",size = (2,2), key = "0", pad = (39,0,0,0))],
+                                    
 
     [sg.Button("1",size = (2,2),key = "1"), sg.Button("2",size = (2,2),key = "2"), sg.Button("3",size = (2,2),key = "3")],
 
@@ -21,6 +20,7 @@ seccion_numeros = [
 
     [sg.Button("7",size = (2,2),key = "7"), sg.Button("8",size = (2,2),key = "8"), sg.Button("9",size = (2,2),key = "9")],
 
+                            [sg.Button(".",size = (2,2), key = "."),sg.Button("0",size = (2,2), key = "0", pad = (39,0,0,0))],
 ]
 
 
@@ -49,7 +49,6 @@ operacion = [
 
 
 
-
 #Creamos el layout
 
 layout = [
@@ -72,7 +71,7 @@ layout = [
 window = sg.Window("Calculadora", layout, margins=(100,50))
 
 
-strDigs = ["0","1","2","3","4","5","6","7","8","9"]
+strDigs = ["0","1","2","3","4","5","6","7","8","9","."]
 
 strOperadores = ["+","-","*","/"]
 
